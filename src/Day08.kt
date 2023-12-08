@@ -9,8 +9,7 @@ fun main() {
             val coordsArr = input[index].replace("\\s".toRegex(), "")
                 .split("=")
             val parsedList = coordsRegex.findAll(coordsArr[1]).toList()
-            coordsMap[coordsArr[0]] =
-                Pair(parsedList[0].groups["coords"]!!.value, parsedList[1].groups["coords"]!!.value)
+            coordsMap[coordsArr[0]] = Pair(parsedList[0].groups["coords"]!!.value, parsedList[1].groups["coords"]!!.value)
         }
         return coordsMap
     }
@@ -48,7 +47,7 @@ fun main() {
         return steps
     }
 
-    fun part2(input: List<String>): Int {
+    fun part2(input: List<String>): Long {
         val instructions = input[0]
 
         // Parse to map
@@ -60,7 +59,8 @@ fun main() {
         // Navigate
         var index = 0
         var currentElements: Map<String, Pair<String, String>> = startingNodes.associateWith { coordsMap[it]!! }
-        var steps = 0
+        var steps = 0L
+        var minSteps: List<Long> = mutableListOf()
         while (true) {
             val instruction = instructions[index]
 
@@ -71,8 +71,11 @@ fun main() {
             }
 
             steps++
-            if(currentElements.keys.all { it.endsWith("Z") }) {
+            if(currentElements.isEmpty()) {
                 break
+            } else if(currentElements.keys.any { it.endsWith("Z") }) {
+                minSteps = minSteps + steps
+                currentElements = currentElements.filter { !it.key.endsWith("Z") }
             } else if(index == instructions.length-1){
                 index = 0
             } else {
@@ -80,7 +83,7 @@ fun main() {
             }
         }
 
-        return steps
+        return MathUtils.getLeastCommonMultiple(minSteps)
     }
 
     val input = readInput("Day08")
