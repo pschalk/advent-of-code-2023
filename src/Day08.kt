@@ -1,3 +1,4 @@
+import java.time.Instant
 
 fun main() {
 
@@ -47,7 +48,8 @@ fun main() {
         return steps
     }
 
-    fun part2(input: List<String>): Long {
+    fun part2(input: List<String>): Int {
+        println("Start Calculation: ${Instant.now()}")
         val instructions = input[0]
 
         // Parse to map
@@ -59,8 +61,7 @@ fun main() {
         // Navigate
         var index = 0
         var currentElements: Map<String, Pair<String, String>> = startingNodes.associateWith { coordsMap[it]!! }
-        var steps = 0L
-        var minSteps: List<Long> = mutableListOf()
+        var steps = 0
         while (true) {
             val instruction = instructions[index]
 
@@ -71,11 +72,8 @@ fun main() {
             }
 
             steps++
-            if(currentElements.isEmpty()) {
+            if(currentElements.keys.all { it.endsWith("Z") }) {
                 break
-            } else if(currentElements.keys.any { it.endsWith("Z") }) {
-                minSteps = minSteps + steps
-                currentElements = currentElements.filter { !it.key.endsWith("Z") }
             } else if(index == instructions.length-1){
                 index = 0
             } else {
@@ -83,7 +81,8 @@ fun main() {
             }
         }
 
-        return MathUtils.getLeastCommonMultiple(minSteps)
+        println("Calculation finished: ${Instant.now()}")
+        return steps
     }
 
     val input = readInput("Day08")
